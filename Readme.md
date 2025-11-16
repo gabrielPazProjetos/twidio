@@ -1,141 +1,94 @@
-# TwiDIO API
+--- TwiDIO API
+API desenvolvida para o desafio TDD: Entendendo e Praticando em um Backend com Node e Typescript da DIO.
+O objetivo é aplicar Test Driven Development (TDD) em um backend com Node.js e TypeScript, criando testes antes da implementação e garantindo qualidade em todas as camadas.
 
-#### API desenvolvida para o projeto TwiDIO
-
-### Arquitetura
-
-#### 📂Controllers
-> Aplica validações necessárias na requisição.
-#### 📂Services
-> Aplica regras de negócios antes de enviar ao repositório.
-#### 📂Repositories
-> Salva os dados no banco de dados.
-#### 📂Entities
-> Gerencia a estrutura das entidades da aplicação.
-#### 📂Database
-> Cria as conexões necessárias com o banco de dados.
-
-#### 📂__mocks __
-> Armazena os dados e mocks utilizados nos testes unitários.
-#### 📂tests
-> Armazena as switch de testes de integração.
-
-```
- 📁 TwiDIO
-   |
-   |-  📁 src
-   |    |
-   |    |- 📁 __mocks_
-   |         |- 📄 getEntityManagerMock.ts
-   |         |- 📄 mockContentList.ts
-   |         |- 📄 mockRequest.ts
-   |         |- 📄 mockResponse.ts
-   |
-   |    |- 📁 database
-   |         |- 📁 migrations
-   |         |- 📄 index.ts
-   |         |- 📄 database.sqlite
-   |         |- 📄 database.test.sqlite
-   |
-   |    |- 📁 controllers
-   |         |- 📄 GetAllPostController.ts
-   |         |- 📄 MessageController.ts
-   |
-   |    |- 📁 entities
-   |         |- 📄 Post.ts
-   |
-   |    |- 📁 repositories
-   |         |- 📄 PostRepository.ts
-   |
-   |    |- 📁 services
-   |         |- 📄 GetAllPostService.ts
-   |
-   |    |- 📁 tests
-   |         |- 📄 posts.test.ts
-   |
-   |
-   |- 📄 .gitignore
-   |- 📄 package.json
-   |- 📄 app.ts
-   |- 📄 index.ts
-   |- 📄 router.ts
-
-```
-
-### Este projeto usa
-- Node
-- Typescript
-- Jest
-- SQLite
+--- Tecnologias utilizadas
+- Node.js
+- TypeScript
+- Express
 - TypeORM
+- SQLite
+- Jest (unitários, integração e e2e)
+- Swagger (documentação da API)
 
-### Como rodar o projeto
+--- Arquitetura
+- Controllers → Validam requisições e retornam respostas.
+- Services → Regras de negócio.
+- Repositories → Persistência no banco.
+- Entities → Estrutura das tabelas.
+- Database → Configuração e migrations.
+- Mocks → Simulações para testes.
+- Tests → Unitários, integração e e2e.
 
-1 - Clone o repositório
+--- Como rodar
+bash
+yarn install
+yarn run dev
+Servidor disponível em:
 
-2 - Instale todas as dependências
+Código
+http://localhost:5000/v1
+Swagger:
 
----
-    yarn install
----
+Código
+http://localhost:5000/doc
 
-4 - Acesse a rota principal
+--- Testes
+-- Repository (PostRepository.test.ts)
+Garante que o método getAll chama o find do TypeORM.
 
-<http://localhost:5000/v1/>
+- Retorna a lista mockada de posts.
 
-### Testando o projeto
+-- Service (GetAllPostService.test.ts)
+Garante que o service chama o repositório.
 
-#### Testes unitários
+- Retorna a lista mockada de posts.
 
----
-    yarn test:unit
----
+-- Controller (GetAllPostController.test.ts)
+Retorna 200 e lista vazia quando não há posts.
 
-#### Testes de integração
+- Retorna 200 e lista de posts quando existem.
 
-1 - Rode a aplicação em modo de desenvolvimento
+- Retorna 500 quando ocorre erro interno.
 
----
-    yarn run dev
----
+-- Endpoint (tests/posts.test.ts)
+Faz requisição real via axios para /v1/posts.
 
-1 - Rode os testes de integração no repositório /tests
+Valida que o status é 200 e que os dados retornados batem com o esperado.
 
----
-    yarn test:integration
----
+--- Edições realizadas
+-- Durante a conclusão do desafio, foram feitos dois ajustes importantes para garantir consistência:
 
-### endpoints
+- index.ts
 
-**_GET_** /posts
+Antes:
+ts
+console.log(Server on port ${process.env.PORT} \nhttp://localhost:${process.env.PORT})
+→ mostrava undefined quando PORT não estava definido.
 
-Retorna todos os posts criados no banco de dados
+Depois:
+ts
+const PORT = process.env.PORT || 5000;
+console.log( Server running on http://localhost:${PORT}/v1);
+→ agora sempre mostra a porta correta.
 
-##### Exemplo
+- tests/posts.test.ts
+Antes: apontava para http://localhost:5001.
+Depois: ajustado para http://localhost:5000/v1, consistente com o servidor.
 
----
-    http://localhost:5000/v1/posts
----
+--- Endpoints
+GET /v1/posts → Retorna todos os posts.
+POST /v1/posts → Cria um novo post (em desenvolvimento).
 
-**_POST_** /posts (em desenvolvimento)
+---Exemplo de resposta:
+json
+[
+  {
+    "id": 1,
+    "author": "author@email.com",
+    "content": "Tuite de exemplo"
+  }
+]
 
-Cria um novo post no banco de dados. Todos os campos são obrigatórios
-
-##### Exemplo
-
----
-    body {
-        author: 'author@email.com',
-        content: 'Tuite de exemplo'
-    }
----
-
-**Desafios sugeridos**
-
-- Usando os conceitos de TDD
-
-[ ] Implementar uma rota que retorne todos os posts de um usuário
-
-[ ] Implementar uma rota que permita excluir um post
-
-### Happy hacking!
+--- Nota
+Ajustes finais para consistência (index.ts e posts.test.ts).
