@@ -1,11 +1,11 @@
-import axios from 'axios'
+import axios from 'axios';
 
 const server = axios.create({
-  baseURL: 'http://localhost:5001'
-})
+  baseURL: 'http://localhost:5000/v1'
+});
 
 describe('/posts', () => {
-  it('Should return status 200 and list of players', async () => {
+  it('Should return status 200 and list of posts', async () => {
     const expectedResponse = [
       {
         post_id: 'b0f3d72a-b8a9-45ec-a8f0-a14f65f3597d',
@@ -17,10 +17,10 @@ describe('/posts', () => {
         author: 'user@dio.me',
         content: 'User about DIO'
       }
-    ]
+    ];
 
-    const response = await server.get('/posts')
-    expect(response.status).toBe(200)
-    expect(response.data).toMatchObject(expectedResponse)
-  })
-})
+    const response = await server.get('/posts');
+    expect(response.status).toBe(200);
+    expect(response.data).toMatchObject(expectedResponse);
+  });
+});
